@@ -186,11 +186,19 @@ row([['Cartório','',100],['Horário','',82]]);
 row([['Corretor','José Sebastião Gomes do Nascimento',100],['CRECI','GO-29639',38],['CPF','842.240.102-91',44]]);
 pg(40);y+=8;d.setFont('helvetica','normal');d.setFontSize(9);d.text('Brasília/DF, '+new Date().toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}),M,y);y+=18;
 d.setDrawColor(0);d.setLineWidth(.3);d.line(M,y,M+80,y);d.line(M+102,y,M+182,y);y+=4.5;d.setFontSize(8.5);d.text('Assinatura Comprador',M+40,y,{align:'center'});d.text('Assinatura do Vendedor',M+142,y,{align:'center'});
-return d}
-$('dl').onclick=function(){var b=chk();if(b){b.scrollIntoView({block:'center'});$('msg').textContent='Preencha os campos obrigatórios antes de gerar o PDF.';return}
-var m=$('msg');m.textContent='';var nm=(inputs.filter(function(x){return x.i==='c_nome'})[0]&&val({i:'c_nome'}))||'';var slug=nm.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'')||'cliente';
-try{var pdf=buildPdf();if(typeof claude==='undefined'){m.textContent='Download indisponível aqui. Use Imprimir / salvar PDF.';return}
-claude.use('downloads').then(function(dl){if(!dl){m.textContent='Download indisponível aqui. Use Imprimir / salvar PDF.';return}return dl.save({filename:'Ficha-Cadastral-'+slug+'.pdf',data:pdf.output('arraybuffer')}).then(function(){m.textContent='PDF pronto. Envie o arquivo ao seu corretor.'})}).catch(function(e){m.textContent=(e&&e.code==='declined')?'Download cancelado.':'Não foi possível salvar o PDF. Use Imprimir / salvar PDF.'});}catch(x){m.textContent='Erro ao gerar o PDF. Use Imprimir / salvar PDF.'}};
+return d}$('dl').onclick=function(){
+  var b=chk();
+  if(b){b.scrollIntoView({block:'center'});$('msg').textContent='Preencha os campos obrigatórios antes de gerar o PDF.';return}
+  var m=$('msg'),nm=val({i:'c_nome'})||'';
+  var slug=nm.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'')||'cliente';
+  try{
+    var pdf=buildPdf();
+    pdf.save('Ficha-Cadastral-'+slug+'.pdf');
+    m.textContent='PDF pronto. Envie o arquivo ao seu corretor.';
+  }catch(x){
+    m.textContent='Erro ao gerar o PDF. Use Imprimir / salvar PDF.';
+  }
+};
 </script>
 </body>
 </html>
